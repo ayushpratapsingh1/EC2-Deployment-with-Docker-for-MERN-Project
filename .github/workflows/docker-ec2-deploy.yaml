@@ -32,6 +32,7 @@ jobs:
       run: |
         docker build -t ${{ secrets.DOCKER_USERNAME }}/login-frontend:latest ./frontend
         docker push ${{ secrets.DOCKER_USERNAME }}/login-frontend:latest
+
     - name: Upload files to EC2
       uses: appleboy/scp-action@v0.1.6
       with:
@@ -40,6 +41,7 @@ jobs:
         key: ${{ secrets.PRIVATE_KEY }}
         source: "./"
         target: "/home/${{ secrets.EC2_USER }}/project"
+
     - name: Deploy to EC2
       uses: appleboy/ssh-action@v0.1.6
       with:
@@ -47,8 +49,6 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.PRIVATE_KEY }}
         script: |
-          mkdir -p /home/${{ secrets.EC2_USER }}/project
-          rsync -avz --exclude '.git' ./ /home/${{ secrets.EC2_USER }}/project/
           cd /home/${{ secrets.EC2_USER }}/project
           export VITE_API_URL=http://${{ secrets.EC2_PUBLIC_IP }}
           docker-compose pull
