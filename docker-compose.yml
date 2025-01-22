@@ -2,11 +2,6 @@ version: '3.8'
 
 services:
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-      args:
-        - VITE_API_URL=${VITE_API_URL}
     image: ayuspratapsingh1/login-frontend:latest
     container_name: login-frontend
     ports:
@@ -17,9 +12,6 @@ services:
       - backend
 
   backend:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
     image: ayuspratapsingh1/login-backend:latest
     container_name: login-backend
     ports:
