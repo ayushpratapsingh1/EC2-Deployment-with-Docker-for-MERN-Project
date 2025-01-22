@@ -23,15 +23,17 @@ jobs:
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/login-backend:latest ./server
-        docker push ${{ secrets.DOCKER_USERNAME }}/login-backend:latest
+        TAG=$(date +%Y%m%d%H%M%S)
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/login-backend:$TAG ./server
+        docker push ${{ secrets.DOCKER_USERNAME }}/login-backend:$TAG
 
     - name: Build and push frontend image
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/login-frontend:latest ./frontend
-        docker push ${{ secrets.DOCKER_USERNAME }}/login-frontend:latest
+        TAG=$(date +%Y%m%d%H%M%S)
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/login-frontend:$TAG ./frontend
+        docker push ${{ secrets.DOCKER_USERNAME }}/login-frontend:$TAG
 
     - name: Upload files to EC2
       uses: appleboy/scp-action@v0.1.6
@@ -56,5 +58,6 @@ jobs:
           export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
           export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           docker-compose down
+          docker rmi -f $(docker images -q)
           docker-compose pull
           docker-compose up -d --force-recreate
