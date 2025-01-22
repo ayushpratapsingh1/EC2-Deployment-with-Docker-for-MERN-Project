@@ -49,6 +49,11 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.PRIVATE_KEY }}
         script: |
+          cd /home/${{ secrets.EC2_USER }}/project
           export VITE_API_URL=http://${{ secrets.EC2_PUBLIC_IP }}
+          export AWS_REGION=${{ secrets.AWS_REGION }}
+          export MONGODB_SECRET_NAME=${{ secrets.MONGODB_SECRET_NAME }}
+          export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+          export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           docker-compose pull
           docker-compose up -d --force-recreate
