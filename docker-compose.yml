@@ -6,11 +6,11 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - VITE_API_URL=http://localhost:3000
+        - VITE_API_URL=${VITE_API_URL}
     ports:
       - "80:80"
     environment:
-      - VITE_API_URL=http://localhost:3000
+      - VITE_API_URL=${VITE_API_URL}
     depends_on:
       - backend
 
@@ -21,12 +21,15 @@ services:
     ports:
       - "3000:3000"
     environment:
+      - NODE_ENV=${NODE_ENV:-development}
       - PORT=3000
       - AWS_REGION=${AWS_REGION}
       - MONGODB_SECRET_NAME=${MONGODB_SECRET_NAME}
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
     restart: unless-stopped
+    expose:
+      - "3000"
 
 volumes:
   mongodb_data:
