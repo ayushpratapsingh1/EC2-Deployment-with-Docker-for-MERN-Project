@@ -21,7 +21,7 @@ jobs:
 
     - name: Build and push backend image
       run: |
-        docker build -t login-backend ./backend
+        docker build -t login-backend ./server
         docker tag login-backend ${DOCKER_USERNAME}/login-backend:${GITHUB_SHA}
         docker push ${DOCKER_USERNAME}/login-backend:${GITHUB_SHA}
 
