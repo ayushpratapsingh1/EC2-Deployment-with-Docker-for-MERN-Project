@@ -27,7 +27,7 @@ class SecretsManager {
       )
 
       const secret = JSON.parse(response.SecretString)
-      console.log(`Successfully retrieved MongoDB URI from AWS Secrets Manager ${secret.name}`)
+      console.log(`Successfully retrieved MongoDB URI from AWS Secrets Manager`)
       return secret.MONGO_URI
     } catch (error) {
       console.error("Error retrieving MongoDB secret:", error)
