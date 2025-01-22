@@ -1,0 +1,42 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Log in to Docker Hub
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+
+    - name: Build and push backend image
+      run: |
+        docker build -t login-backend ./backend
+        docker tag login-backend ${DOCKER_USERNAME}/login-backend:${GITHUB_SHA}
+        docker push ${DOCKER_USERNAME}/login-backend:${GITHUB_SHA}
+
+    - name: Build and push frontend image
+      run: |
+        docker build -t login-frontend ./frontend
+        docker tag login-frontend ${DOCKER_USERNAME}/login-frontend:${GITHUB_SHA}
+        docker push ${DOCKER_USERNAME}/login-frontend:${GITHUB_SHA}
+
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.EC2_PUBLIC_IP }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.PRIVATE_KEY }}
+        script: |
+          docker-compose pull
+          docker-compose up -d --force-recreate

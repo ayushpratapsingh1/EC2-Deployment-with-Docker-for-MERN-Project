@@ -7,6 +7,8 @@ services:
       dockerfile: Dockerfile
       args:
         - VITE_API_URL=${VITE_API_URL}
+    image: ayuspratapsingh1/login-frontend:latest
+    container_name: login-frontend
     ports:
       - "80:80"
     environment:
@@ -18,6 +20,8 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
+    image: ayuspratapsingh1/login-backend:latest
+    container_name: login-backend
     ports:
       - "3000:3000"
     environment:
