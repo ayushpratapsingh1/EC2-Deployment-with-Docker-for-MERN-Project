@@ -13,34 +13,20 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Log in to Docker Hub
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and push backend image
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/login-backend:latest ./server
-        docker push ${{ secrets.DOCKER_USERNAME }}/login-backend:latest
-
-    - name: Build and push frontend image
+    - name: Build and push images
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       run: |
         docker build -t ${{ secrets.DOCKER_USERNAME }}/login-frontend:latest ./frontend
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/login-backend:latest ./server
         docker push ${{ secrets.DOCKER_USERNAME }}/login-frontend:latest
-
-    - name: Upload files to EC2
-      uses: appleboy/scp-action@v0.1.6
-      with:
-        host: ${{ secrets.EC2_PUBLIC_IP }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.PRIVATE_KEY }}
-        source: "./"
-        target: "/home/${{ secrets.EC2_USER }}/Login" # Target directory on EC2
+        docker push ${{ secrets.DOCKER_USERNAME }}/login-backend:latest
 
     - name: Deploy to EC2
       uses: appleboy/ssh-action@v0.1.6
@@ -49,7 +35,7 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.PRIVATE_KEY }}
         script: |
-          cd /home/${{ secrets.EC2_USER }}/Login
+          export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
           export AWS_REGION=${{ secrets.AWS_REGION }}
           export MONGODB_SECRET_NAME=${{ secrets.MONGODB_SECRET_NAME }}
           export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
