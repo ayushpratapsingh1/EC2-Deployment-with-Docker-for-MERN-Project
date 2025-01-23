@@ -1,31 +1,14 @@
-version: '3.8'
-
 services:
-  frontend:
-    image: ayuspratapsingh1/login-frontend:latest
-    container_name: login-frontend
-    ports:
-      - "80:80"
-    environment:
-      - VITE_API_URL=${VITE_API_URL}
-    depends_on:
-      - backend
-
-  backend:
-    image: ayuspratapsingh1/login-backend:latest
-    container_name: login-backend
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=${NODE_ENV:-development}
       - PORT=3000
       - AWS_REGION=${AWS_REGION}
       - MONGODB_SECRET_NAME=${MONGODB_SECRET_NAME}
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
     restart: unless-stopped
-    expose:
-      - "3000"
-
-volumes:
-  mongodb_data:
