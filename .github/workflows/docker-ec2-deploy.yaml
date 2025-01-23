@@ -19,19 +19,24 @@ jobs:
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
 
-    - name: Build and push backend image
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+    - name: Build frontend
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/login-backend:latest ./server
-        docker push ${{ secrets.DOCKER_USERNAME }}/login-backend:latest
+        cd frontend
+        npm install
+        npm run build
+        cd ..
 
-    - name: Build and push frontend image
+    - name: Copy frontend build to server
+      run: |
+        rm -rf server/dist # Clean previous build
+        cp -r frontend/dist server/ # Copy new build to server folder
+
+    - name: Build and push server image
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/login-frontend:latest ./frontend
-        docker push ${{ secrets.DOCKER_USERNAME }}/login-frontend:latest
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/login-server:latest ./server
+        docker push ${{ secrets.DOCKER_USERNAME }}/login-server:latest
 
     - name: Upload files to EC2
       uses: appleboy/scp-action@v0.1.6
@@ -39,7 +44,7 @@ jobs:
         host: ${{ secrets.EC2_PUBLIC_IP }}
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.PRIVATE_KEY }}
-        source: "docker-compose.yml"
+        source: "./"
         target: "/home/${{ secrets.EC2_USER }}/Login"
 
     - name: Deploy to EC2
@@ -52,10 +57,10 @@ jobs:
           cd /home/${{ secrets.EC2_USER }}/Login
           export AWS_REGION=${{ secrets.AWS_REGION }}
           export MONGODB_SECRET_NAME=${{ secrets.MONGODB_SECRET_NAME }}
-          export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
           export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
           export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           docker-compose down --volumes --remove-orphans
-          docker rm -f login-backend || true
+          docker rm -f login-server || true
           docker-compose pull
           docker-compose up -d --force-recreate
+
