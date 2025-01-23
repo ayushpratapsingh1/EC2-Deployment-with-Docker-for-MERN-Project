@@ -24,7 +24,7 @@ function Login() {
     setIsLoading(true)
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/login`, formData)
+      const response = await axios.post(`/login`, formData)
 
       if (response.data === "Successfully logged in") {
         navigate("/welcome", {
