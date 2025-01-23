@@ -25,7 +25,7 @@ function Register() {
     setIsLoading(true)
 
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/register`, formData)
+      await axios.post(`/register`, formData)
       alert("User created successfully")
       navigate("/login")
     } catch (error) {
