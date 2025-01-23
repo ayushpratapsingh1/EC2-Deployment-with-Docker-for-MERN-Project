@@ -1,6 +1,6 @@
-# SpeakX: My Individual Full Stack Login System
+# EC2 Deployment with Docker and SSL for MERN Project
 
-I created SpeakX to deliver a fully functional, secure user registration and login experience, hosted on AWS. Below, I’ll walk you step-by-step through provisioning the infrastructure with Terraform, developing a React + Node.js application, containerizing with Docker, implementing a CI/CD pipeline, and finally securing it with SSL via Let’s Encrypt.
+I created this to deliver a fully functional, secure user registration and login experience, hosted on AWS. Below, I’ll walk you step-by-step through provisioning the infrastructure with Terraform, developing a React + Node.js application, containerizing with Docker, implementing a CI/CD pipeline, and finally securing it with SSL via Let’s Encrypt.
 
 ---
 
