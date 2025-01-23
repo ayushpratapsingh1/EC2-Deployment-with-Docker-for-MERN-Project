@@ -22,6 +22,7 @@ function Login() {
     e.preventDefault()
     setError("")
     setIsLoading(true)
+    console.log(`${import.meta.env.VITE_API_URL}/login`)
 
     try {
       console.log(`${import.meta.env.VITE_API_URL}/login`)
