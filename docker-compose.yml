@@ -1,25 +1,19 @@
 services:
-  nginx:
-    image: nginx:alpine
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
       - "80:80"
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
-    depends_on:
-      - frontend
-      - backend
-
-  frontend:
-    image: ${DOCKER_USERNAME}/login-frontend:latest
-    expose:
-      - "3000"
     depends_on:
       - backend
 
   backend:
-    image: ${DOCKER_USERNAME}/login-backend:latest
-    expose:
-      - "3000"
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
     environment:
       - PORT=3000
       - AWS_REGION=${AWS_REGION}
