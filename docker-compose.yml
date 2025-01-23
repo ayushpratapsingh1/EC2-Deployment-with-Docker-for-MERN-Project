@@ -4,7 +4,7 @@ services:
       context: ./server
       dockerfile: Dockerfile
     ports:
-      - "443:3000"
+      - "80:3000"
     environment:
       - PORT=3000
       - AWS_REGION=${AWS_REGION}
