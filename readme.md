@@ -89,3 +89,28 @@ services:
     docker rmi $(docker images -q)
     docker rm $(docker ps -aq)
     docker rm -f $(docker ps -aq)
+
+
+
+    services:
+  frontend:
+    image: ${DOCKER_USERNAME}/login-frontend:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+  backend:
+    image: ${DOCKER_USERNAME}/login-backend:latest
+    expose:
+      - "3000"
+    environment:
+      - PORT=3000
+      - AWS_REGION=${AWS_REGION}
+      - MONGODB_SECRET_NAME=${MONGODB_SECRET_NAME}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:

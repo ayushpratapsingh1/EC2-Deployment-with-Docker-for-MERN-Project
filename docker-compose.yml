@@ -1,8 +1,18 @@
 services:
-  frontend:
-    image: ${DOCKER_USERNAME}/login-frontend:latest
+  nginx:
+    image: nginx:alpine
     ports:
       - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - frontend
+      - backend
+
+  frontend:
+    image: ${DOCKER_USERNAME}/login-frontend:latest
+    expose:
+      - "3000"
     depends_on:
       - backend
 
