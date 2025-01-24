@@ -133,9 +133,6 @@ jobs:
       # ...
 ```
 
-### Changes Made
-Integrate notifications for pipeline failures and add automated tests to ensure code quality before deployment.
-
 ### Challenge
 Add a step in the GitHub Actions workflow to run unit tests before building the Docker image.
 
