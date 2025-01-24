@@ -4,6 +4,9 @@ This readme is a well-organized guide for this project and its components. It wi
 
 ---
 
+## Flow Diagram
+![Flow Diagram](./FlowDiagram.png)
+
 ## Prerequisites
 
 Before starting, ensure the following:
