@@ -4,26 +4,36 @@ This readme is a well-organized guide for this project and its components. It wi
 
 ---
 
-## Flow Diagram
-![Flow Diagram](./FlowDiagram.png)
+## Flow Diagram and Prerequisites
 
-## Prerequisites
-
-Before starting, ensure the following:
-
-• AWS account with an EC2 key pair (used to SSH into the instance).  
-• Terraform installed on your local machine (for infrastructure as code).  
-• Docker Engine (can be on your local machine or directly on the EC2 instance).  
-• GitHub account to store repository secrets (used for CI/CD).  
-• Basic familiarity with React, Node.js, environment variables, and shell operations.
-
-For deeper knowledge, consult:  
-• [Terraform Docs](https://developer.hashicorp.com/terraform/docs)  
-• [Docker Docs](https://docs.docker.com/)  
-• [Node.js Docs](https://nodejs.org/en/docs)  
-• [React Docs](https://react.dev/)  
-• [Certbot](https://certbot.eff.org/)  
-• [Nginx](https://docs.nginx.com/)
+<table style="border-collapse: collapse; width: 100%;">
+  <tr>
+    <td style="vertical-align: top; padding-right: 20px;">
+      <p align="center">
+        <img src="./FlowDiagram.png" alt="Flow Diagram" height="400">
+      </p>
+    </td>
+    <td style="vertical-align: top;">
+      <h3>Prerequisites</h3>
+      <ul>
+        <li>AWS account with an EC2 key pair (used to SSH into the instance).</li>
+        <li>Terraform installed on your local machine (for infrastructure as code).</li>
+        <li>Docker Engine (can be on your local machine or directly on the EC2 instance).</li>
+        <li>GitHub account to store repository secrets (used for CI/CD).</li>
+        <li>Basic familiarity with React, Node.js, environment variables, and shell operations.</li>
+      </ul>
+      <p>For deeper knowledge, consult:</p>
+      <ul>
+        <li><a href="https://developer.hashicorp.com/terraform/docs">Terraform Docs</a></li>
+        <li><a href="https://docs.docker.com/">Docker Docs</a></li>
+        <li><a href="https://nodejs.org/en/docs">Node.js Docs</a></li>
+        <li><a href="https://react.dev/">React Docs</a></li>
+        <li><a href="https://certbot.eff.org/">Certbot</a></li>
+        <li><a href="https://docs.nginx.com/">Nginx Docs</a></li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
 ---
 
