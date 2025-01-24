@@ -31,7 +31,8 @@ Start by creating foundational AWS resources with Terraform. This includes:
 • VPC (Virtual Private Cloud) to isolate the network.  
 • Public Subnet linked to an Internet Gateway for external access.  
 • Security Group allowing inbound traffic on ports 22 (SSH), 80 (HTTP), and 443 (HTTPS).  
-• EC2 instance configured with an IAM role giving read access to AWS Secrets Manager (for storing MongoDB credentials).
+• EC2 instance configured with an IAM role giving read access to AWS Secrets Manager (for storing MongoDB credentials).  
+• Elastic IP to ensure a static IP address for the EC2 instance.
 
 ### Key Commands
 ```bash
@@ -42,6 +43,9 @@ terraform apply  # Creates or updates infrastructure
 
 ### Changes Made
 Modularize the Terraform configuration to encapsulate VPC, subnets, and security group logic for reusability. This approach makes the infrastructure more scalable and easier to manage.
+
+### Elastic IP Usage
+An Elastic IP is linked to the EC2 instance to ensure a static IP address. This is important because the public IP address of an EC2 instance changes if the instance is rebooted or stopped. An Elastic IP does not incur any cost as long as it is associated with a running instance.
 
 ### Challenge
 Try adding an additional security group rule to allow inbound traffic on port 8080 for future use.
