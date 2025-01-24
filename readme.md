@@ -43,6 +43,9 @@ terraform apply  # Creates or updates infrastructure
 ### Changes Made
 Modularize the Terraform configuration to encapsulate VPC, subnets, and security group logic for reusability. This approach makes the infrastructure more scalable and easier to manage.
 
+### Challenge
+Try adding an additional security group rule to allow inbound traffic on port 8080 for future use.
+
 ---
 
 ## Step 2: React Frontend & Node Backend
@@ -62,6 +65,9 @@ npm start
 
 ### Changes Made
 Separate Express routes logically (e.g., userRoutes.js, authRoutes.js) and add structured logging using Winston. This improves code clarity and makes production debugging simpler.
+
+### Challenge
+Implement a new route in the backend to handle user profile updates and test it with Postman.
 
 ---
 
@@ -95,6 +101,9 @@ sudo systemctl enable docker
 sudo usermod -a -G docker ec2-user
 ```
 
+### Challenge
+Create a Dockerfile for a simple Nginx server and deploy it using Docker Compose.
+
 ---
 
 ## Step 4: CI/CD with GitHub Actions
@@ -122,6 +131,9 @@ jobs:
 
 ### Changes Made
 Integrate notifications for pipeline failures and add automated tests to ensure code quality before deployment.
+
+### Challenge
+Add a step in the GitHub Actions workflow to run unit tests before building the Docker image.
 
 ---
 
@@ -152,6 +164,9 @@ curl -v https://myapp.duckdns.org
 
 ### Changes Made
 Schedule crontab tasks to automatically renew SSL certificates and periodically verify the renewal process.
+
+### Challenge
+Configure Nginx to serve a custom 404 error page.
 
 ---
 
@@ -189,22 +204,9 @@ By following these steps, the following is achieved:
 
 ---
 
-## Challenges Faced
+## Final Challenge
 
-### Terraform Provisioning
-Initially, there was a struggle to write minimal yet valid IAM policies for Secrets Manager. By reviewing official Terraform documentation and iteratively refining the policy, access was restricted to only necessary ARNs.
-
-### React Frontend & Node Backend
-There was trouble ensuring the “dist” folder was served effectively from the Node server. Once the frontend was built with Vite and output files copied to the server folder, both client and server ran smoothly on a single port.
-
-### Docker Containerization
-Old images persisted on the EC2 instance. Removing or pruning these images before downloading new ones was essential, preventing the container from using outdated builds.
-
-### CI/CD with GitHub Actions
-Mapping GitHub secrets (e.g., AWS_ACCESS_KEY_ID, DockerHub credentials) into the workflow was tricky. Experimenting and verifying environment variables eventually allowed seamless deployment from GitHub to the EC2 instance.
-
-### SSL with Let’s Encrypt & Nginx
-Initially, ports 80 and 443 were not opened in the security group, causing certificate issuing to fail. Once the ports were unblocked, Certbot succeeded, and the site was served securely over HTTPS.
+Combine all the concepts learned to deploy a new feature end-to-end. For example, add a new page to the React frontend, create corresponding backend routes, update the Docker setup, and ensure the CI/CD pipeline deploys the changes automatically. Secure the new feature with SSL and test it thoroughly.
 
 ---
 
@@ -220,4 +222,6 @@ Key lessons:
 5. Let’s Encrypt, through Certbot and Nginx, provides a straightforward path to HTTPS without extra costs.  
 6. DuckDNS offers a quick and free way to get a domain name, though it has limitations for professional use.
 
-By following each step methodically, this full-stack deployment can be replicated or expanded for other use cases. Should hurdles arise, remember they’re part of the learning journey—and rely on official docs or community forums for help. Happy coding!
+#### Tip: By following each step methodically, this full-stack deployment can be replicated or expanded for other use cases. Should hurdles arise, remember they’re part of the learning journey—and rely on official docs or community forums for help.
+
+### Happy coding!
