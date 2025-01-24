@@ -54,7 +54,7 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.PRIVATE_KEY }}
         script: |
-          cd /home/${{ secrets.EC2_USER }}/Login
+          cd /home/${{ secrets.EC2_USER }}/
           export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
           export AWS_REGION=${{ secrets.AWS_REGION }}
           export MONGODB_SECRET_NAME=${{ secrets.MONGODB_SECRET_NAME }}
