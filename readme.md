@@ -175,7 +175,6 @@ Configure Nginx to serve a custom 404 error page.
 ---
 
 ## Registering a Free Domain with DuckDNS
-
 To make the application accessible via a domain name, register a free domain from DuckDNS. DuckDNS is a free dynamic DNS service that allows creating a subdomain and pointing it to the public IP address.
 
 ### Pros
