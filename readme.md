@@ -10,7 +10,7 @@ This readme is a well-organized guide for this project and its components. It wi
   <tr>
     <td style="vertical-align: top; padding-right: 20px;">
       <p align="center">
-        <img src="./FlowDiagram.png" alt="Flow Diagram" height="400">
+        <img src="./FlowDiagram.png" alt="Flow Diagram" height="500">
       </p>
     </td>
     <td style="vertical-align: top;">
