@@ -1,8 +1,6 @@
 services:
   server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
+    image: ${DOCKER_USERNAME}/login-server:${IMAGE_TAG:-latest}
     ports:
       - "3000:3000"
     environment:
@@ -12,3 +10,6 @@ services:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
     restart: unless-stopped
+
+volumes:
+  mongodb_data:

@@ -28,8 +28,8 @@ jobs:
 
     - name: Copy frontend build to server
       run: |
-        rm -rf server/dist # Clean previous build
-        cp -r frontend/dist server/ # Copy new build to server folder
+        rm -rf server/dist
+        cp -r frontend/dist server/
 
     - name: Build and push server image
       env:
@@ -38,14 +38,14 @@ jobs:
         docker build -t ${{ secrets.DOCKER_USERNAME }}/login-server:latest ./server
         docker push ${{ secrets.DOCKER_USERNAME }}/login-server:latest
 
-    - name: Upload files to EC2
+    - name: Upload docker-compose.yml to EC2
       uses: appleboy/scp-action@v0.1.6
       with:
         host: ${{ secrets.EC2_PUBLIC_IP }}
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.PRIVATE_KEY }}
-        source: "./"
-        target: "/home/${{ secrets.EC2_USER }}/Login"
+        source: "docker-compose.yml"
+        target: "/home/${{ secrets.EC2_USER }}/"
 
     - name: Deploy to EC2
       uses: appleboy/ssh-action@v0.1.6
@@ -55,12 +55,12 @@ jobs:
         key: ${{ secrets.PRIVATE_KEY }}
         script: |
           cd /home/${{ secrets.EC2_USER }}/Login
+          export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
           export AWS_REGION=${{ secrets.AWS_REGION }}
           export MONGODB_SECRET_NAME=${{ secrets.MONGODB_SECRET_NAME }}
           export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
           export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           docker-compose down --rmi all
-          docker system prune -af          
-          docker rm -f login-server || true
+          docker system prune -af
           docker-compose pull
           docker-compose up -d --force-recreate
