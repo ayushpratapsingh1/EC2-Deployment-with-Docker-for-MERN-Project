@@ -84,13 +84,32 @@ const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
   try {
-    await connectToDatabase(); // Initialize the database connection.
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
+    await connectToDatabase();
+    
+    // Try different ports if default is in use
+    const findAvailablePort = async (startPort) => {
+      return new Promise((resolve, reject) => {
+        const server = app.listen(startPort)
+          .on('listening', () => {
+            console.log(`Server running on port ${startPort}`);
+            resolve(server);
+          })
+          .on('error', (err) => {
+            if (err.code === 'EADDRINUSE') {
+              console.log(`Port ${startPort} is busy, trying ${startPort + 1}`);
+              server.close();
+              resolve(findAvailablePort(startPort + 1));
+            } else {
+              reject(err);
+            }
+          });
+      });
+    };
+
+    await findAvailablePort(PORT);
   } catch (error) {
     console.error("Failed to start server:", error);
-    process.exit(1); // Exit the process on failure.
+    process.exit(1);
   }
 };
 
