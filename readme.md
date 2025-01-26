@@ -65,6 +65,159 @@ Try adding an additional security group rule to allow inbound traffic on port 80
 
 ---
 
+## AWS Infrastructure Details
+
+### VPC Configuration
+The Virtual Private Cloud (VPC) is configured with the following components:
+
+```hcl
+VPC CIDR: 10.0.0.0/16
+Public Subnet: 10.0.1.0/24
+Private Subnet: 10.0.2.0/24
+```
+
+#### Subnet Configuration
+- **Public Subnet**
+  - Used for: EC2 instances that need internet access
+  - Auto-assign public IP: Yes
+  - Route table: Connected to Internet Gateway
+  
+- **Private Subnet**
+  - Used for: Internal resources (future databases, caching)
+  - Auto-assign public IP: No
+  - Route table: Connected to NAT Gateway
+
+### Security Group Configuration
+The EC2 instance uses the following security group rules:
+
+#### Inbound Rules
+```plaintext
+Port 22 (SSH)      : TCP : Source 0.0.0.0/0 : SSH access
+Port 80 (HTTP)     : TCP : Source 0.0.0.0/0 : HTTP traffic
+Port 443 (HTTPS)   : TCP : Source 0.0.0.0/0 : HTTPS traffic
+Port 3000 (API)    : TCP : Source 0.0.0.0/0 : Node.js API
+Port 27017 (MongoDB): TCP : Source 10.0.0.0/16 : MongoDB (VPC only)
+```
+
+#### Outbound Rules
+```plaintext
+All Traffic : All : Destination 0.0.0.0/0 : Allow all outbound traffic
+```
+
+### IAM Policy Requirements
+
+#### EC2 Instance Profile
+The EC2 instance requires the following IAM policy for AWS Secrets Manager access:
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret"
+            ],
+            "Resource": [
+                "arn:aws:secretsmanager:${AWS_REGION}:${ACCOUNT_ID}:secret:mongodb_url2-??????"
+            ]
+        }
+    ]
+}
+```
+
+#### Additional IAM Policies Required
+
+1. **CloudWatch Logs Policy**
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": "arn:aws:logs:*:*:*"
+        }
+    ]
+}
+```
+
+2. **S3 Access Policy (if needed for static files)**
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::your-bucket-name",
+                "arn:aws:s3:::your-bucket-name/*"
+            ]
+        }
+    ]
+}
+```
+
+### Network ACL (NACL) Configuration
+Additional layer of security at the subnet level:
+
+#### Inbound Rules
+```plaintext
+Rule # | Type    | Protocol | Port Range | Source       | Allow/Deny
+100    | HTTP    | TCP      | 80         | 0.0.0.0/0   | ALLOW
+110    | HTTPS   | TCP      | 443        | 0.0.0.0/0   | ALLOW
+120    | SSH     | TCP      | 22         | 0.0.0.0/0   | ALLOW
+130    | Custom  | TCP      | 3000       | 0.0.0.0/0   | ALLOW
+140    | Custom  | TCP      | 27017      | 10.0.0.0/16 | ALLOW
+* All other inbound traffic is DENIED by default
+```
+
+#### Outbound Rules
+```plaintext
+Rule # | Type    | Protocol | Port Range | Destination | Allow/Deny
+100    | All TCP | TCP      | 1024-65535 | 0.0.0.0/0  | ALLOW
+110    | HTTP    | TCP      | 80         | 0.0.0.0/0  | ALLOW
+120    | HTTPS   | TCP      | 443        | 0.0.0.0/0  | ALLOW
+* All other outbound traffic is DENIED by default
+```
+
+### Best Practices for Security
+
+1. **VPC Flow Logs**
+   - Enable VPC Flow Logs to monitor network traffic
+   - Store logs in CloudWatch for analysis
+   - Set up alerts for suspicious activity
+
+2. **Security Group Management**
+   - Regularly audit security group rules
+   - Remove unused rules
+   - Use specific IP ranges instead of 0.0.0.0/0 where possible
+   - Tag security groups for better organization
+
+3. **Access Management**
+   - Use IAM roles instead of access keys
+   - Implement least privilege principle
+   - Regularly rotate credentials
+   - Enable MFA for AWS console access
+
+4. **Network Security**
+   - Use private subnets for sensitive resources
+   - Implement NAT Gateway for outbound internet access
+   - Enable VPC endpoints for AWS services
+   - Use AWS Systems Manager Session Manager instead of direct SSH
+
+---
+
 ## Step 2: React Frontend & Node Backend
 
 Once the EC2 instance is up, build a React application with Vite for frontend pages (Login, Register, Welcome) and a Node.js/Express backend connected to MongoDB Atlas. Manage environment variables locally using .env files and store credentials in AWS Secrets Manager.
